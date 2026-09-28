@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
+  <title>1С: License Hub — AnywhereUSB Datacenter Console</title>
+  
+  <!-- App Icon & Favicon -->
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  
+  <!-- Fonts: Inter & JetBrains Mono / Material Symbols Google Monochrome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <link rel="stylesheet" href="/assets/style.css?v=1.4.0">
+</head>
+<body>
+
+  <!-- Top Terminal Header -->
+  <header class="app-header">
+    <div class="logo-area">
+      <img src="/icon.png" alt="Oxide License Hub" class="app-logo">
+      <div class="brand-text">
+        <div class="brand-title">
+          <span class="status-led active" id="headerPulse" title="Статус службы"></span>
+          <span class="brand-name">1С: LICENSE HUB</span>
+          <span class="badge-oxide">CONSOLE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hub LED Statuses -->
+    <div class="health-badges">
+      <div class="hub-status-badge" id="badgeDigi150">
+        <span class="led-indicator active"></span>
+        <span class="hub-label">DIGI-01:</span>
+        <span class="hub-val" id="textStatus150">ONLINE</span>
+      </div>
+      <div class="hub-status-badge" id="badgeDigi151">
+        <span class="led-indicator active"></span>
+        <span class="hub-label">DIGI-02:</span>
+        <span class="hub-val" id="textStatus151">ONLINE</span>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Polling Selector -->
+      <div class="setting-item" title="Частота опроса Digi и серверов лицензий">
+        <span class="material-symbols-outlined icon-mono">schedule</span>
+        <span class="setting-label">Опрос:</span>
+        <select class="select-oxide" id="selPollingInterval">
+          <option value="15">15 МИН</option>
+          <option value="30">30 МИН</option>
+          <option value="60" selected>1 ЧАС (DEFAULT)</option>
+          <option value="120">2 ЧАСА</option>
+          <option value="360">6 ЧАСОВ</option>
+          <option value="1440">24 ЧАСА</option>
+        </select>
+      </div>
+
+      <!-- Live Countdown -->
+      <div class="timer-badge" id="autoRefreshCountdown" title="Следующий автоопрос">
+        <span class="material-symbols-outlined icon-mono">timer</span>
+        <span id="countdownText">ДО ОПРОСА: --:--</span>
+      </div>
+
+      <!-- Primary Action: Deep Teal filled button with Phosphor Green text -->
+      <button class="btn btn-primary-oxide" id="btnRefresh" title="Принудительно опросить концентраторы и серверы">
+        <span class="material-symbols-outlined icon-mono spin-target" style="color: var(--color-phosphor-green);">sync</span>
+        <span id="btnRefreshText">ОПРОСИТЬ СЕЙЧАС</span>
+      </button>
+
+      <!-- Exports -->
+      <button class="btn btn-ghost-oxide" id="btnExportCsv" title="Экспорт портов и лицензий в CSV">
+        <span class="material-symbols-outlined icon-mono">table_view</span>
+        <span>CSV</span>
+      </button>
+      <button class="btn btn-ghost-oxide" id="btnExportJson" title="Экспорт JSON-снимка телеметрии">
+        <span class="material-symbols-outlined icon-mono">data_object</span>
+        <span>JSON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="app-body">
+
+    <!-- Compact Infrastructure Telemetry Strip -->
+    <section class="metrics-strip">
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">ВСЕГО ПОРТОВ</span>
+          <span class="material-symbols-outlined metric-icon">hub</span>
+        </div>
+        <div class="metric-value" id="valTotalPorts">38</div>
+        <div class="metric-sub">24 (DIGI-01) + 14 (DIGI-02)</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">ЗАНЯТО КЛЮЧАМИ</span>
+          <span class="material-symbols-outlined metric-icon">usb</span>
+        </div>
+        <div class="metric-value" id="valOccupiedPorts">0</div>
+        <div class="metric-sub" id="subOccupied">USB-ДОНГЛЫ В РАЗЪЕМАХ</div>
+      </div>
+
+      <div class="metric-card active-card">
+        <div class="metric-header">
+          <span class="metric-label">В РАБОТЕ</span>
+          <span class="material-symbols-outlined metric-icon" style="color: var(--color-phosphor-green);">power</span>
+        </div>
+        <div class="metric-value text-phosphor" id="valInUsePorts">0</div>
+        <div class="metric-sub">СЕССИИ СЕРВЕРОВ 1С</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">СВОБОДНО ПОРТОВ</span>
+          <span class="material-symbols-outlined metric-icon">check_box_outline_blank</span>
+        </div>
+        <div class="metric-value" id="valFreePorts">0</div>
+        <div class="metric-sub">ГОТОВО К ПОДКЛЮЧЕНИЮ</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">ЛИЦЕНЗИОННЫЙ ПУЛ</span>
+          <span class="material-symbols-outlined metric-icon">vpn_key</span>
+        </div>
+        <div class="metric-value" id="valTotalCapacity">0</div>
+        <div class="metric-sub" id="subCapacity">КЛИЕНТСКИХ МЕСТ В ПУЛАХ</div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="view-tabs-strip">
+      <div class="view-tabs">
+        <button class="view-tab-btn active" data-view="digi-150">
+          <span class="material-symbols-outlined icon-mono">dns</span>
+          <span>DIGI 01 — ANYWHEREUSB 24 PLUS</span>
+          <span class="tab-counter" id="tabCount150">24 ПОРТА</span>
+        </button>
+        <button class="view-tab-btn" data-view="digi-151">
+          <span class="material-symbols-outlined icon-mono">dns</span>
+          <span>DIGI 02 — ANYWHEREUSB/14</span>
+          <span class="tab-counter" id="tabCount151">14 ПОРТОВ</span>
+        </button>
+        <button class="view-tab-btn" data-view="both">
+          <span class="material-symbols-outlined icon-mono">view_agenda</span>
+          <span>ОБЕ DIGI (2 ТАБЛИЦЫ)</span>
+          <span class="tab-counter" id="tabCountBoth">38 ПОРТОВ</span>
+        </button>
+        <button class="view-tab-btn" data-view="catalog">
+          <span class="material-symbols-outlined icon-mono">badge</span>
+          <span>СВОДНЫЙ РЕЕСТР ЛИЦЕНЗИЙ</span>
+          <span class="tab-counter" id="tabCountCatalog">КАТАЛОГ</span>
+        </button>
+      </div>
+
+      <div class="last-sync-badge" id="lastSyncText">
+        <span class="material-symbols-outlined icon-mono" style="font-size: 13px;">history</span>
+        <span>ОПРОС: --:--:--</span>
+      </div>
+    </nav>
+
+    <!-- Toolbar Filter & Search -->
+    <section class="toolbar-strip">
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="search-input" id="tableSearch" placeholder="ПОИСК ПО ПОРТУ, СЕРВЕРУ 1С, IP, КЛЮЧУ, ЛИЦЕНЗИИ ИЛИ РЕГ.№...">
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">КАТЕГОРИЯ:</span>
+        <div class="filter-pills" id="categoryFilters">
+          <button class="filter-pill active" data-filter="category" data-value="all">ВСЕ</button>
+          <button class="filter-pill" data-filter="category" data-value="slk">СЛК 3.0</button>
+          <button class="filter-pill" data-filter="category" data-value="guardant">GUARDANT</button>
+          <button class="filter-pill" data-filter="category" data-value="dalion">ДАЛИОН</button>
+          <button class="filter-pill" data-filter="category" data-value="hasp">1С HASP</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">СТАТУС:</span>
+        <div class="filter-pills" id="statusFilters">
+          <button class="filter-pill active" data-filter="status" data-value="all">ВСЕ</button>
+          <button class="filter-pill" data-filter="status" data-value="InUse">В РАБОТЕ</button>
+          <button class="filter-pill" data-filter="status" data-value="Connected">ЗАХВАЧЕН</button>
+          <button class="filter-pill" data-filter="status" data-value="Available">СВОБОДЕН</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow Container: Tables -->
+    <div class="tables-flow-container">
+
+      <!-- ============================================== -->
+      <!-- TABLE 1: DIGI 01 (AnywhereUSB 24 Plus) -->
+      <!-- ============================================== -->
+      <section class="hub-table-section" id="sectionDigi150">
+        <div class="hub-table-header">
+          <div class="hub-title-group">
+            <span class="material-symbols-outlined hub-icon">dns</span>
+            <div>
+              <div class="hub-title">DIGI 01 — ANYWHEREUSB 24 PLUS</div>
+              <div class="hub-subtitle">
+                <span class="cell-mono" id="hubAddr150">—</span> •
+                <span>ПОРТЫ 01 – 24</span> •
+                <span class="badge-oxide-active" id="badgeStatus150">…</span>
+                <span class="hub-inline-meta" id="hubMeta150"></span>
+              </div>
+            </div>
+          </div>
+          <div class="hub-metrics-summary" id="summary150">
+            <span class="summary-chip">ВСЕГО: 24</span>
+            <span class="summary-chip" id="chipOcc150">ЗАНЯТО: 0</span>
+            <span class="summary-chip chip-green" id="chipInUse150">В РАБОТЕ: 0</span>
+            <span class="summary-chip" id="chipPool150">ЛИЦЕНЗИЙ: 0</span>
+            <button type="button" class="btn-hub-info" id="toggleDrawer150" aria-expanded="false" aria-controls="drawer150" title="Об устройстве: IP, MAC, Device ID, серийный номер, прошивка">
+              <span class="material-symbols-outlined" aria-hidden="true">developer_board</span>
+              <span>ОБ УСТРОЙСТВЕ</span>
+              <span class="material-symbols-outlined btn-hub-info-chevron" aria-hidden="true">expand_more</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Device card: hardware & network details (toggled from the header) -->
+        <div class="hub-device-drawer" id="drawer150" hidden>
+          <div class="device-spec-grid">
+            <div class="spec-card spec-card-wide">
+              <div class="spec-label">МОДЕЛЬ</div>
+              <div class="spec-value" id="specModel150">AnywhereUSB 24 Plus</div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">IP-АДРЕС И ПОРТ</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specIp150">—</span>
+                <a href="#" target="_blank" rel="noopener" class="spec-link-btn" id="specLink150" title="Открыть веб-консоль Digi 01">
+                  <span class="material-symbols-outlined">open_in_new</span>
+                </a>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">MAC-АДРЕС</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specMac150">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopyMac150" title="Копировать MAC-адрес">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">DEVICE ID (GUID)</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono spec-truncate" id="specGuid150" title="Device GUID">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopyGuid150" title="Копировать Device ID">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label" id="specSerialLabel150">СЕРИЙНЫЙ НОМЕР</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specSerial150">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopySerial150" title="Копировать серийный номер">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">ПРОШИВКА</div>
+              <div class="spec-value font-mono" id="specFw150">—</div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">ПОСЛЕДНИЙ ОПРОС</div>
+              <div class="spec-value font-mono" id="specSeen150">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="oxide-table" id="tableDigi150">
+            <thead>
+              <tr>
+                <th style="width: 78px; text-align: center;">USB ПОРТ</th>
+                <th style="width: 80px;">ГРУППА</th>
+                <th style="width: 215px;">КЛИЕНТ / ХОСТ</th>
+                <th style="width: 165px;">USB-КЛЮЧ</th>
+                <th>ОПОЗНАННАЯ ЛИЦЕНЗИЯ</th>
+                <th style="width: 170px;">КОЛИЧЕСТВО ЛИЦЕНЗИЙ</th>
+                <th style="width: 105px; text-align: center;">СТАТУС</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDigi150">
+              <tr>
+                <td colspan="7" class="table-empty-cell">
+                  <div class="loading-wrap">
+                    <span class="material-symbols-outlined spin-fast text-phosphor">sync</span>
+                    <span>Опрос Digi 01...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TABLE 2: DIGI 02 (AnywhereUSB/14) -->
+      <!-- ============================================== -->
+      <section class="hub-table-section" id="sectionDigi151" style="display: none;">
+        <div class="hub-table-header">
+          <div class="hub-title-group">
+            <span class="material-symbols-outlined hub-icon">dns</span>
+            <div>
+              <div class="hub-title">DIGI 02 — ANYWHEREUSB/14</div>
+              <div class="hub-subtitle">
+                <span class="cell-mono" id="hubAddr151">—</span> •
+                <span>ПОРТЫ 01 – 14</span> •
+                <span class="badge-oxide-active" id="badgeStatus151">…</span>
+                <span class="hub-inline-meta" id="hubMeta151"></span>
+              </div>
+            </div>
+          </div>
+          <div class="hub-metrics-summary" id="summary151">
+            <span class="summary-chip">ВСЕГО: 14</span>
+            <span class="summary-chip" id="chipOcc151">ЗАНЯТО: 0</span>
+            <span class="summary-chip chip-green" id="chipInUse151">В РАБОТЕ: 0</span>
+            <span class="summary-chip" id="chipPool151">ЛИЦЕНЗИЙ: 0</span>
+            <button type="button" class="btn-hub-info" id="toggleDrawer151" aria-expanded="false" aria-controls="drawer151" title="Об устройстве: IP, MAC, Device ID, Product ID, прошивка">
+              <span class="material-symbols-outlined" aria-hidden="true">developer_board</span>
+              <span>ОБ УСТРОЙСТВЕ</span>
+              <span class="material-symbols-outlined btn-hub-info-chevron" aria-hidden="true">expand_more</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Device card: hardware & network details (toggled from the header) -->
+        <div class="hub-device-drawer" id="drawer151" hidden>
+          <div class="device-spec-grid">
+            <div class="spec-card spec-card-wide">
+              <div class="spec-label">МОДЕЛЬ</div>
+              <div class="spec-value" id="specModel151">AnywhereUSB/14</div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">IP-АДРЕС И ПОРТ</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specIp151">—</span>
+                <a href="#" target="_blank" rel="noopener" class="spec-link-btn" id="specLink151" title="Открыть веб-консоль Digi 02">
+                  <span class="material-symbols-outlined">open_in_new</span>
+                </a>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">MAC-АДРЕС</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specMac151">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopyMac151" title="Копировать MAC-адрес">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">DEVICE ID (GUID)</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono spec-truncate" id="specGuid151" title="Device GUID">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopyGuid151" title="Копировать Device ID">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label" id="specSerialLabel151">PRODUCT ID</div>
+              <div class="spec-value-row">
+                <span class="spec-value font-mono" id="specSerial151">—</span>
+                <button type="button" class="spec-copy-btn" id="btnCopySerial151" title="Копировать Product ID">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">ПРОШИВКА</div>
+              <div class="spec-value font-mono" id="specFw151">—</div>
+            </div>
+            <div class="spec-card">
+              <div class="spec-label">ПОСЛЕДНИЙ ОПРОС</div>
+              <div class="spec-value font-mono" id="specSeen151">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="oxide-table" id="tableDigi151">
+            <thead>
+              <tr>
+                <th style="width: 78px; text-align: center;">USB ПОРТ</th>
+                <th style="width: 80px;">ГРУППА</th>
+                <th style="width: 215px;">КЛИЕНТ / ХОСТ</th>
+                <th style="width: 165px;">USB-КЛЮЧ</th>
+                <th>ОПОЗНАННАЯ ЛИЦЕНЗИЯ</th>
+                <th style="width: 170px;">КОЛИЧЕСТВО ЛИЦЕНЗИЙ</th>
+                <th style="width: 105px; text-align: center;">СТАТУС</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDigi151">
+              <tr>
+                <td colspan="7" class="table-empty-cell">
+                  <div class="loading-wrap">
+                    <span class="material-symbols-outlined spin-fast text-phosphor">sync</span>
+                    <span>Опрос Digi 02...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TABLE 3: CATALOG VIEW -->
+      <!-- ============================================== -->
+      <section class="hub-table-section" id="sectionCatalog" style="display: none;">
+        <div class="hub-table-header">
+          <div class="hub-title-group">
+            <span class="material-symbols-outlined hub-icon">vpn_key</span>
+            <div>
+              <div class="hub-title">СВОДНЫЙ РЕЕСТР ЛИЦЕНЗИЙ</div>
+              <div class="hub-subtitle">СЕРВЕРЫ ЛИЦЕНЗИРОВАНИЯ 1С:СЛК, GUARDANT, SENTINEL И КЛЮЧИ В КОНЦЕНТРАТОРАХ DIGI</div>
+            </div>
+          </div>
+          <div class="hub-metrics-summary" id="summaryCatalog">
+            <span class="summary-chip chip-green" id="chipTotalCatalogLicenses">0 ПОЗИЦИЙ</span>
+            <span class="summary-chip" id="chipCatalogSeats">МЕСТ: 0</span>
+            <span class="summary-chip" id="chipCatalogServers">СЕРВЕРОВ: 0</span>
+            <span class="catalog-env-filter" role="group" aria-label="Фильтр по среде">
+              <span class="filter-label">СРЕДА:</span>
+              <button type="button" class="filter-pill active" data-filter="env" data-value="all">ВСЕ</button>
+              <button type="button" class="filter-pill" data-filter="env" data-value="PROD">PROD</button>
+              <button type="button" class="filter-pill" data-filter="env" data-value="DEV">DEV</button>
+            </span>
+            <span class="catalog-env-filter" role="group" aria-label="Фильтр по носителю">
+              <span class="filter-label">НОСИТЕЛЬ:</span>
+              <button type="button" class="filter-pill active" data-filter="medium" data-value="all">ВСЕ</button>
+              <button type="button" class="filter-pill" data-filter="medium" data-value="Программная" title="Программные лицензии: активированы на сервере, USB-ключ не нужен">ПРОГРАММНЫЕ <span class="pill-count" id="cntMediumSoft">0</span></button>
+              <button type="button" class="filter-pill" data-filter="medium" data-value="Аппаратная" title="Аппаратные USB-ключи: в концентраторе Digi или прямо в сервере">АППАРАТНЫЕ <span class="pill-count" id="cntMediumHard">0</span></button>
+            </span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="oxide-table catalog-table" id="tableCatalog">
+            <thead>
+              <tr>
+                <th style="width: 190px;">ГДЕ ПОДКЛЮЧЁН / АКТИВИРОВАН</th>
+                <th style="width: 118px;">НОСИТЕЛЬ</th>
+                <th style="width: 150px;">ЛИЦЕНЗИЙ</th>
+                <th>ЛИЦЕНЗИЯ</th>
+                <th style="width: 210px;">ПРОБРОШЕН НА / ИСПОЛЬЗУЮТ</th>
+                <th style="width: 140px;">КЛЮЧ / СЕРИЯ</th>
+                <th style="width: 100px;">РЕГ. №</th>
+                <th style="width: 170px;">ОРГАНИЗАЦИЯ</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyCatalog">
+              <tr>
+                <td colspan="8" class="table-empty-cell">Загрузка реестра лицензий...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Detail Drawer Modal -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="detailDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <span class="material-symbols-outlined icon-mono">usb</span>
+        <div>
+          <h2 class="drawer-title" id="drawerPortTitle">ПОРТ --</h2>
+          <div class="drawer-subtitle" id="drawerDeviceSubtitle">КОНЦЕНТРАТОР</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost-oxide btn-sm" id="btnCloseDrawer">
+        <span class="material-symbols-outlined icon-mono">close</span>
+      </button>
+    </div>
+
+    <!-- Details Sections -->
+    <div class="drawer-section">
+      <span class="drawer-section-title">ФИЗИЧЕСКИЙ ПОРТ ANYWHEREUSB</span>
+      <div class="detail-row"><span class="detail-key">Концентратор:</span><span class="detail-val" id="detHub"></span></div>
+      <div class="detail-row"><span class="detail-key">Порт:</span><span class="detail-val" id="detPort"></span></div>
+      <div class="detail-row"><span class="detail-key">Группа AnywhereUSB:</span><span class="detail-val" id="detGroup"></span></div>
+      <div class="detail-row"><span class="detail-key">Статус соединения:</span><span class="detail-val" id="detStatus"></span></div>
+    </div>
+
+    <div class="drawer-section">
+      <span class="drawer-section-title">ПОДКЛЮЧЕННЫЙ КЛИЕНТ</span>
+      <div class="detail-row"><span class="detail-key">Имя хоста:</span><span class="detail-val" id="detClientHost"></span></div>
+      <div class="detail-row"><span class="detail-key">IP-адрес:</span><span class="detail-val" id="detClientIp"></span></div>
+    </div>
+
+    <div class="drawer-section">
+      <span class="drawer-section-title">АППАРАТНЫЙ USB-КЛЮЧ</span>
+      <div class="detail-row"><span class="detail-key">Производитель:</span><span class="detail-val" id="detManufacturer"></span></div>
+      <div class="detail-row"><span class="detail-key">Модель ключа:</span><span class="detail-val" id="detProduct"></span></div>
+      <div class="detail-row"><span class="detail-key">Версия USB:</span><span class="detail-val" id="detUsbVer"></span></div>
+      <div class="detail-row"><span class="detail-key">Серийный номер:</span><span class="detail-val" id="detSerial"></span></div>
+    </div>
+
+    <div class="drawer-section">
+      <span class="drawer-section-title">ЛИЦЕНЗИОННОЕ СОДЕРЖИМОЕ</span>
+      <div class="detail-row"><span class="detail-key">Категория:</span><span class="detail-val" id="detCategory"></span></div>
+      <div class="detail-row"><span class="detail-key">Продукт:</span><span class="detail-val" id="detLicProduct"></span></div>
+      <div class="detail-row"><span class="detail-key">ID ключа:</span><span class="detail-val" id="detDongleId"></span></div>
+      <div class="detail-row"><span class="detail-key">Регистрационный №:</span><span class="detail-val" id="detRegNo"></span></div>
+      <div class="detail-row"><span class="detail-key">Тип лицензии:</span><span class="detail-val" id="detLicType"></span></div>
+      <div class="detail-row"><span class="detail-key">Количество лицензий:</span><span class="detail-val text-phosphor" id="detCapacity"></span></div>
+      <div class="detail-row"><span class="detail-key">Организация:</span><span class="detail-val" id="detOrg"></span></div>
+    </div>
+
+    <div class="drawer-section" id="drawerProcessesSection">
+      <span class="drawer-section-title">СЕАНСЫ ПРОЦЕССОВ 1С (RPHOST)</span>
+      <ul class="processes-list" id="detProcessesList">
+        <!-- Rendered via JS -->
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Dedicated Bottom Bar (Footer) -->
+  <footer class="app-footer">
+    <div class="footer-left-status">
+      <span class="status-led-mini active"></span>
+      <span class="footer-brand">1С: LICENSE HUB CONSOLE</span>
+      <span class="footer-dot">•</span>
+      <span class="footer-sub">ANYWHEREUSB & 1С INFRASTRUCTURE</span>
+    </div>
+    <div class="footer-right-badges">
+      <div class="corner-pill corner-version-pill">
+        <span class="corner-app-ver">v1.4.0</span>
+        <span class="corner-dot">•</span>
+        <span class="corner-build-date">28.09.2026</span>
+      </div>
+      <a href="https://t.me/DarkSailas" target="_blank" rel="noopener noreferrer" class="corner-pill corner-tg-link" title="Telegram: @DarkSailas">
+        <svg class="corner-tg-icon" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+        </svg>
+        <span>@DarkSailas</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="/assets/app.js?v=1.4.0"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>14.0</LangVersion>
+    <AnalysisLevel>none</AnalysisLevel>
+    <AnalysisMode>none</AnalysisMode>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);NU1900;NU1901;NU1902;NU1903;NU1904;CS1591;CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8625;CS8632;CS1998;CA1031;CA1050;CA1051;CA1052;CA1054;CA1055;CA1056;CA1062;CA1303;CA1304;CA1305;CA1307;CA1720;CA1725;CA1805;CA1816;CA1822;CA1825;CA1834;CA1835;CA1836;CA1840;CA1848;CA1852;CA1854;CA1859;CA1860;CA1861;CA1865;CA1866;CA1868;CA2000;CA2002;CA2007;CA2012;CA2016;CA2022;CA2201;CA2213;CA2214;CA2227;CA2234;CA2249;CA2253;CA2254;CA5392;CA5394;IDE0037</NoWarn>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
+    <SatelliteResourceLanguages>none</SatelliteResourceLanguages>
+    <Version>1.4.0</Version>
+    <FileVersion>1.4.0.0</FileVersion>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <Product>OneSLicenseHub</Product>
+    <Company>DarkSailas</Company>
+
+    <!-- Temp output paths to prevent cloud lockups on Google Drive -->
+    <BaseIntermediateOutputPath>$(LocalAppData)\Temp\OneSLicenseHub_Build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(LocalAppData)\Temp\OneSLicenseHub_Build\$(MSBuildProjectName)\bin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>

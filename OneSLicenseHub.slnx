@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OneSLicenseHub.Core/OneSLicenseHub.Core.csproj" />
+    <Project Path="src/OneSLicenseHub.Web/OneSLicenseHub.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OneSLicenseHub.Tests/OneSLicenseHub.Tests.csproj" />
+  </Folder>
+</Solution>

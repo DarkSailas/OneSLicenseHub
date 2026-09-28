@@ -1,0 +1,45 @@
+## Build and output directories
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+publish/
+dist/
+TestResults/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Visual Studio & JetBrains Rider
+.vs/
+.idea/
+*.swp
+*~
+Thumbs.db
+[Ee]xpress/
+
+## OS generated
+.DS_Store
+ehthumbs.db
+desktop.ini
+
+## Testing & coverage
+*.trx
+coverage.opencover.xml
+
+## Logs, runtime dumps & Playwright artifacts
+*.log
+*.log.*
+overview.json
+.playwright-cli/
+test-results/
+playwright-report/
+.vscode/
+
+## Local secrets (real infrastructure config must never be committed)
+appsettings.Production.json

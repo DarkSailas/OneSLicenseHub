@@ -1,0 +1,1720 @@
+/* ==========================================================================
+   1C: LICENSE HUB — OXIDE COMPUTER COMPANY STYLE REFERENCE
+   Theme: Datacenter rack at midnight with one green LED lit
+   Aesthetic: Terminal-grade infrastructure, razor-thin 1px hairlines, 1px radius
+   ========================================================================== */
+
+:root {
+  /* Oxide Tokens — Colors */
+  --color-void-black: #0b0e12;
+  --color-carbon: #181a1d;
+  --color-graphite: #1f2124;
+  --color-slate-base: #303235;
+  --color-fog: #5d5e61;
+  --color-steel: #818284;
+  --color-ash: #a3a4a5;
+  --color-silver: #bababb;
+  --color-bone: #dedede;
+  --color-phosphor-green: #00d892;
+  --color-deep-teal: #002923;
+  --color-emerald-depth: #005441;
+  --color-diagnostic-magenta: #9f3f53;
+  --color-syntax-violet: #c58aff;
+  --color-syntax-coral: #ff6285;
+  --color-syntax-forest: #006d4a;
+
+  /* Typography */
+  --font-suisseintl: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-gt-america-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Roboto Mono', ui-monospace, monospace;
+  --font-weight-regular: 400;
+
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+
+  /* Corner Radius - softened slightly for balanced enterprise look */
+  --radius-sm: 2px;
+  --radius-nav: 3px;
+  --radius-cards: 4px;
+  --radius-badges: 3px;
+  --radius-inputs: 3px;
+  --radius-buttons: 3px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-base) var(--color-void-black);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-base);
+  border-radius: 1px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-steel);
+}
+
+body {
+  background-color: var(--color-void-black);
+  color: var(--color-silver);
+  font-family: var(--font-suisseintl);
+  font-weight: var(--font-weight-regular);
+  font-size: 11.5px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Material Symbols Google Monochrome */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+.icon-mono {
+  font-size: 13px;
+  color: var(--color-steel);
+}
+
+/* Color Utilities */
+.text-bone { color: var(--color-bone); }
+.text-phosphor { color: var(--color-phosphor-green); }
+.text-silver { color: var(--color-silver); }
+.text-steel { color: var(--color-steel); }
+.text-fog { color: var(--color-fog); }
+
+/* Header — Infrastructure Terminal Bar */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--color-void-black);
+  border-bottom: 1px solid var(--color-slate-base);
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  gap: 12px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.app-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-slate-base);
+  object-fit: cover;
+  background: var(--color-carbon);
+}
+
+.brand-text {
+  display: flex;
+  align-items: center;
+}
+
+.brand-title {
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 12px;
+  letter-spacing: 0.053em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-oxide {
+  font-size: 9px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-steel);
+  border: 1px solid var(--color-slate-base);
+  background-color: var(--color-carbon);
+  padding: 1px 4px;
+  border-radius: var(--radius-badges);
+  letter-spacing: 0.064em;
+}
+
+.status-led {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-slate-base);
+}
+.status-led.active {
+  background-color: var(--color-phosphor-green);
+  box-shadow: 0 0 4px var(--color-phosphor-green);
+}
+
+/* Health badges */
+.health-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hub-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  padding: 2px 6px;
+  border-radius: var(--radius-badges);
+  font-size: 10px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.053em;
+}
+
+.hub-label {
+  color: var(--color-steel);
+}
+.hub-val {
+  color: var(--color-bone);
+}
+
+.led-indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background-color: var(--color-steel);
+}
+.led-indicator.active {
+  background-color: var(--color-phosphor-green);
+}
+
+/* Header actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-inputs);
+  padding: 2px 6px;
+  font-size: 10.5px;
+  font-family: var(--font-gt-america-mono);
+}
+
+.setting-label {
+  color: var(--color-steel);
+  letter-spacing: 0.04em;
+}
+
+.select-oxide {
+  background: transparent;
+  border: none;
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  outline: none;
+  cursor: pointer;
+}
+.select-oxide option {
+  background-color: var(--color-carbon);
+  color: var(--color-bone);
+}
+
+.timer-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-badges);
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-silver);
+  letter-spacing: 0.053em;
+}
+
+/* Oxide Buttons */
+.btn {
+  font-size: 10.5px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.053em;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.1s ease;
+  text-decoration: none;
+  border-radius: var(--radius-buttons);
+  outline: none;
+}
+
+/* Filled Primary: Deep Teal #002923 with Phosphor Green text */
+.btn-primary-oxide {
+  background-color: var(--color-deep-teal);
+  color: var(--color-phosphor-green);
+  border: 1px solid var(--color-deep-teal);
+}
+.btn-primary-oxide:hover {
+  background-color: var(--color-emerald-depth);
+  border-color: var(--color-emerald-depth);
+}
+
+/* Outlined Ghost: 1px border Slate */
+.btn-ghost-oxide {
+  background-color: transparent;
+  border: 1px solid var(--color-slate-base);
+  color: var(--color-silver);
+}
+.btn-ghost-oxide:hover {
+  border-color: var(--color-bone);
+  color: var(--color-bone);
+  background-color: var(--color-graphite);
+}
+
+.btn-sm {
+  padding: 2px 5px;
+  font-size: 9.5px;
+}
+
+.spin-target {
+  transition: transform 0.2s ease;
+}
+.btn.loading .spin-target, .spin-fast {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* App Body Container */
+.app-body {
+  flex: 1;
+  max-width: 1540px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 8px 12px 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Telemetry Metrics Strip */
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.metric-card {
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-cards);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-label {
+  font-size: 9px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.064em;
+  color: var(--color-steel);
+  text-transform: uppercase;
+}
+
+.metric-icon {
+  font-size: 12px;
+  color: var(--color-fog);
+}
+
+.metric-value {
+  font-size: 15px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-bone);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.metric-sub {
+  font-size: 9.5px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.04em;
+  color: var(--color-fog);
+}
+
+/* Navigation Tabs Strip */
+.view-tabs-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-slate-base);
+  padding-bottom: 6px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.view-tab-btn {
+  font-size: 10.5px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.053em;
+  padding: 4px 10px;
+  border-radius: var(--radius-nav);
+  border: 1px solid var(--color-slate-base);
+  background-color: transparent;
+  color: var(--color-steel);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.1s ease;
+}
+
+.view-tab-btn:hover {
+  color: var(--color-bone);
+  border-color: var(--color-steel);
+  background-color: var(--color-graphite);
+}
+
+.view-tab-btn.active {
+  background-color: var(--color-graphite);
+  border-color: var(--color-phosphor-green);
+  color: var(--color-bone);
+}
+
+.tab-counter {
+  font-size: 9px;
+  font-family: var(--font-gt-america-mono);
+  background-color: var(--color-void-black);
+  border: 1px solid var(--color-slate-base);
+  color: var(--color-steel);
+  padding: 0 5px;
+  border-radius: var(--radius-badges);
+  letter-spacing: 0.05em;
+}
+
+.view-tab-btn.active .tab-counter {
+  color: var(--color-phosphor-green);
+  border-color: rgba(0, 216, 146, 0.4);
+}
+
+.last-sync-badge {
+  font-size: 10px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-fog);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Toolbar Strip */
+.toolbar-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-cards);
+  padding: 5px 10px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--color-void-black);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-inputs);
+  padding: 0 8px;
+  height: 26px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.search-icon {
+  font-size: 13px;
+  color: var(--color-fog);
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 10.5px;
+  width: 100%;
+  outline: none;
+  letter-spacing: 0.03em;
+}
+.search-input::placeholder {
+  color: var(--color-fog);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filter-label {
+  font-size: 9.5px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-steel);
+  letter-spacing: 0.053em;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 3px;
+}
+
+.filter-pill {
+  font-size: 9.5px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: var(--radius-badges);
+  border: 1px solid var(--color-slate-base);
+  background-color: transparent;
+  color: var(--color-steel);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+.filter-pill:hover {
+  color: var(--color-bone);
+  border-color: var(--color-steel);
+}
+.filter-pill.active {
+  background-color: var(--color-graphite);
+  border-color: var(--color-silver);
+  color: var(--color-bone);
+}
+
+/* Tables Flow */
+.tables-flow-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Dedicated Hub Section */
+.hub-table-section {
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-cards);
+  display: flex;
+  flex-direction: column;
+}
+
+.hub-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: var(--color-graphite);
+  border-bottom: 1px solid var(--color-slate-base);
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hub-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hub-icon {
+  font-size: 13px;
+  color: var(--color-bone);
+}
+
+.hub-title {
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 11px;
+  letter-spacing: 0.053em;
+}
+
+.hub-subtitle {
+  font-size: 9px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-steel);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-oxide-active {
+  font-size: 8px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-phosphor-green);
+  border: 1px solid rgba(0, 216, 146, 0.4);
+  background-color: var(--color-deep-teal);
+  padding: 0 4px;
+  border-radius: var(--radius-badges);
+  letter-spacing: 0.064em;
+}
+
+.hub-metrics-summary {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.summary-chip {
+  font-size: 9px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.05em;
+  color: var(--color-steel);
+  background-color: var(--color-void-black);
+  border: 1px solid var(--color-slate-base);
+  padding: 1px 5px;
+  border-radius: var(--radius-badges);
+}
+
+.chip-green {
+  color: var(--color-phosphor-green);
+  border-color: rgba(0, 216, 146, 0.3);
+}
+
+/* Oxide Corporate Table: Precision Grid Lines with Sticky Headers */
+.table-responsive {
+  width: 100%;
+  overflow-x: visible;
+}
+
+@media (max-width: 1100px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
+
+.oxide-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 10px;
+}
+
+.oxide-table thead th {
+  position: sticky;
+  top: 42px;
+  z-index: 20;
+  background-color: var(--color-graphite);
+  color: var(--color-steel);
+  font-family: var(--font-gt-america-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-slate-base);
+  border-right: 1px solid var(--color-slate-base);
+  white-space: nowrap;
+  vertical-align: middle;
+  height: 28px;
+  box-sizing: border-box;
+}
+.oxide-table thead th:last-child {
+  border-right: none;
+}
+
+.oxide-table td {
+  padding: 2px 6px;
+  border-bottom: 1px solid var(--color-slate-base);
+  border-right: 1px solid var(--color-slate-base);
+  color: var(--color-silver);
+  vertical-align: middle;
+  height: 34px;
+  line-height: 1.25;
+  box-sizing: border-box;
+}
+.oxide-table td:last-child {
+  border-right: none;
+}
+
+#tableCatalog td {
+  vertical-align: middle;
+  height: 34px;
+}
+
+.oxide-table tbody tr {
+  height: 34px;
+  transition: background-color 0.06s ease;
+  cursor: pointer;
+  background-color: var(--color-carbon);
+}
+
+.oxide-table tbody tr:hover {
+  background-color: var(--color-graphite);
+}
+
+.oxide-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cell-line-primary {
+  min-height: 15px;
+  line-height: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.cell-group-name {
+  color: #9ea4ad;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  opacity: 1;
+}
+
+/* Dedicated USB Port Column & Compact Accent Badge */
+.td-usb-port {
+  text-align: center;
+  padding: 2px 4px !important;
+  background-color: rgba(0, 216, 146, 0.015);
+}
+
+.usb-port-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 48px;
+  height: 20px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #151d24 0%, #0d1217 100%);
+  border: 1px solid rgba(0, 216, 146, 0.35);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.usb-port-badge .port-icon {
+  font-size: 10px;
+  color: var(--color-phosphor-green);
+}
+
+.usb-port-badge .port-num {
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #f0f6fc;
+}
+
+.usb-port-badge.port-has-dongle {
+  border-color: rgba(0, 216, 146, 0.45);
+}
+
+.usb-port-badge.port-empty {
+  background: rgba(22, 27, 34, 0.4);
+  border-color: var(--color-slate-base);
+  opacity: 0.65;
+}
+
+.usb-port-badge.port-empty .port-icon {
+  color: var(--color-fog);
+}
+
+.usb-port-badge.port-empty .port-num {
+  color: var(--color-fog);
+  font-weight: 500;
+}
+
+.oxide-table tbody tr:hover .usb-port-badge.port-has-dongle {
+  border-color: var(--color-phosphor-green);
+  background: linear-gradient(180deg, #1c2732 0%, #11181f 100%);
+  box-shadow: 0 0 8px rgba(0, 216, 146, 0.25);
+}
+
+.oxide-table tbody tr:hover .usb-port-badge.port-empty {
+  border-color: var(--color-steel);
+  opacity: 0.85;
+}
+
+.cell-primary {
+  color: var(--color-bone);
+  font-weight: 500;
+  font-size: 10px;
+}
+
+.cell-mono {
+  font-family: var(--font-gt-america-mono);
+}
+
+.cell-sub {
+  font-size: 8.5px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-steel);
+  line-height: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 5px;
+  border-radius: var(--radius-badges);
+  font-size: 8.5px;
+  font-family: var(--font-gt-america-mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.badge-in-use {
+  background-color: var(--color-deep-teal);
+  color: var(--color-phosphor-green);
+  border: 1px solid rgba(0, 216, 146, 0.4);
+}
+.badge-in-use::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-phosphor-green);
+  box-shadow: 0 0 4px var(--color-phosphor-green);
+}
+
+.badge-connected {
+  background-color: var(--color-graphite);
+  color: var(--color-silver);
+  border: 1px solid var(--color-slate-base);
+}
+.badge-connected::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-ash);
+}
+
+.badge-unassigned {
+  background-color: var(--color-void-black);
+  color: var(--color-syntax-coral);
+  border: 1px solid var(--color-slate-base);
+}
+
+.badge-available {
+  background-color: transparent;
+  color: var(--color-fog);
+  border: 1px solid rgba(48, 50, 53, 0.5);
+}
+
+/* Category Label & Subtle Palette Tinting */
+.cat-tag {
+  display: inline-block;
+  font-size: 8.5px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-steel);
+  border: 1px solid var(--color-slate-base);
+  background-color: var(--color-void-black);
+  padding: 1px 4px;
+  border-radius: var(--radius-badges);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 11px;
+}
+
+.cat-tag.cat-hasp {
+  background-color: rgba(30, 80, 145, 0.18);
+  border-color: rgba(75, 145, 230, 0.35);
+  color: #72b0f4;
+}
+
+.cat-tag.cat-guardant {
+  background-color: rgba(145, 95, 20, 0.18);
+  border-color: rgba(225, 160, 40, 0.35);
+  color: #ebb95d;
+}
+
+.cat-tag.cat-dalion {
+  background-color: rgba(95, 55, 145, 0.18);
+  border-color: rgba(165, 105, 230, 0.35);
+  color: #c4a4f0;
+}
+
+.cat-tag.cat-slk {
+  background-color: rgba(10, 110, 75, 0.20);
+  border-color: rgba(0, 216, 146, 0.35);
+  color: #55e09f;
+}
+
+/* Subtle USB Key Model Tinting */
+.key-model {
+  display: inline-block;
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.key-model.key-hasp-hl {
+  color: #8cb8eb;
+}
+
+.key-model.key-hasp-net {
+  color: #6ed0dc;
+}
+
+.key-model.key-sentinel {
+  color: #bfa8ed;
+}
+
+.key-model.key-guardant-stealth {
+  color: #ebb95d;
+}
+
+.key-model.key-guardant-sign {
+  color: #f29c66;
+}
+
+.key-model.key-katran {
+  color: #55e09f;
+}
+
+.hw-sub {
+  font-size: 8.5px;
+  font-family: var(--font-gt-america-mono);
+  color: #7e8794;
+  line-height: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Clean Enterprise Host Typography */
+.host-plain {
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Repeated machine in table: ultra-subtle tint + tiny 4px dot, ZERO box / ZERO background */
+.host-repeat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.host-repeat-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* 6 Barely-there subtle tints (only slight pastel tint on text & dot) */
+.host-subtle-0 { color: #9bbbe8; }
+.host-subtle-0 .host-repeat-dot { background-color: #72a2db; }
+
+.host-subtle-1 { color: #d6b880; }
+.host-subtle-1 .host-repeat-dot { background-color: #cca45a; }
+
+.host-subtle-2 { color: #78c4b5; }
+.host-subtle-2 .host-repeat-dot { background-color: #55b5a3; }
+
+.host-subtle-3 { color: #baaee0; }
+.host-subtle-3 .host-repeat-dot { background-color: #9f8fd4; }
+
+.host-subtle-4 { color: #98c496; }
+.host-subtle-4 .host-repeat-dot { background-color: #7ab377; }
+
+.host-subtle-5 { color: #8ec0d2; }
+.host-subtle-5 .host-repeat-dot { background-color: #6aabc2; }
+
+/* Universal Matching Cell Highlight on Hover */
+.oxide-table td.cell-match-highlight {
+  background-color: rgba(255, 255, 255, 0.055) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22) !important;
+}
+
+.oxide-table td.cell-hover-source {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 216, 146, 0.40) !important;
+}
+
+.table-empty-cell {
+  text-align: center;
+  padding: 20px 10px !important;
+  color: var(--color-steel);
+  font-family: var(--font-gt-america-mono);
+}
+
+.loading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* Detail Drawer Modal */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(11, 14, 18, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  display: none;
+}
+.drawer-backdrop.open {
+  display: block;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  max-width: 92vw;
+  background-color: var(--color-carbon);
+  border-left: 1px solid var(--color-slate-base);
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.15s ease-out;
+  padding: 16px;
+  gap: 12px;
+  overflow-y: auto;
+}
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--color-slate-base);
+  padding-bottom: 8px;
+}
+
+.drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.drawer-title {
+  color: var(--color-bone);
+  font-family: var(--font-gt-america-mono);
+  font-size: 13px;
+  letter-spacing: 0.053em;
+}
+
+.drawer-subtitle {
+  color: var(--color-steel);
+  font-size: 10px;
+  font-family: var(--font-gt-america-mono);
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.drawer-section-title {
+  font-size: 9px;
+  letter-spacing: 0.064em;
+  color: var(--color-steel);
+  font-family: var(--font-gt-america-mono);
+  text-transform: uppercase;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(48, 50, 53, 0.5);
+  font-size: 11px;
+  gap: 16px;
+}
+
+.detail-key {
+  color: var(--color-steel);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.detail-val {
+  color: var(--color-silver);
+  font-family: var(--font-gt-america-mono);
+  text-align: right;
+  flex: 1;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+}
+
+.processes-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.process-item {
+  background-color: var(--color-void-black);
+  border: 1px solid var(--color-slate-base);
+  border-radius: 1px;
+  padding: 3px 6px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9.5px;
+  color: var(--color-silver);
+}
+
+/* Fixed Dedicated Bottom Bar (Footer) */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 34px;
+  background-color: var(--color-void-black);
+  border-top: 1px solid var(--color-slate-base);
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.footer-left-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9.5px;
+  user-select: none;
+}
+
+.status-led-mini {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-phosphor-green);
+  box-shadow: 0 0 6px var(--color-phosphor-green);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.footer-brand {
+  color: var(--color-bone);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.footer-dot {
+  color: var(--color-fog);
+  font-size: 8px;
+}
+
+.footer-sub {
+  color: var(--color-steel);
+  letter-spacing: 0.02em;
+}
+
+.footer-right-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.corner-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: rgba(24, 28, 33, 0.85);
+  border: 1px solid var(--color-slate-base);
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--color-bone);
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s ease;
+}
+
+.corner-version-pill {
+  user-select: none;
+}
+
+.corner-app-ver {
+  color: #78c4b5;
+  font-weight: 600;
+}
+
+.corner-build-date {
+  color: var(--color-silver);
+}
+
+.corner-tg-link {
+  color: #9bbbe8;
+  cursor: pointer;
+}
+
+.corner-tg-link:hover {
+  background: rgba(32, 40, 50, 0.95);
+  border-color: #558ac5;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(114, 162, 219, 0.25);
+}
+
+.corner-tg-icon {
+  flex-shrink: 0;
+  color: #72a2db;
+}
+
+/* Ensure table content never slides under the bottom bar */
+.app-body {
+  padding-bottom: 52px !important;
+}
+
+/* ==========================================================================
+   Hub Device Telemetry Collapsible Drawer (Linear Dark / Oxide Style)
+   ========================================================================== */
+/* Header button that opens the device card (same language as .filter-pill / .view-tab-btn) */
+.btn-hub-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 6px;
+  padding: 2px 6px 2px 7px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9.5px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  color: var(--color-steel);
+  background-color: transparent;
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-badges);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: all 0.1s ease;
+}
+
+.btn-hub-info .material-symbols-outlined {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-fog);
+  transition: color 0.1s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hub-info:hover {
+  color: var(--color-bone);
+  border-color: var(--color-steel);
+  background-color: var(--color-graphite);
+}
+
+.btn-hub-info:hover .material-symbols-outlined {
+  color: var(--color-silver);
+}
+
+.btn-hub-info:focus-visible {
+  outline: 1px solid var(--color-phosphor-green);
+  outline-offset: 1px;
+}
+
+.btn-hub-info.active {
+  color: var(--color-bone);
+  border-color: var(--color-phosphor-green);
+  background-color: var(--color-graphite);
+}
+
+.btn-hub-info.active .material-symbols-outlined {
+  color: var(--color-phosphor-green);
+}
+
+.btn-hub-info.active .btn-hub-info-chevron {
+  transform: rotate(180deg);
+}
+
+/* Always-visible MAC / firmware line in the hub subtitle */
+.hub-inline-meta {
+  color: var(--color-fog);
+  white-space: nowrap;
+}
+
+/* Hub status badge variants */
+.badge-oxide-active.badge-status-degraded {
+  color: #f2b84b;
+  border-color: rgba(242, 184, 75, 0.45);
+  background-color: rgba(242, 184, 75, 0.08);
+}
+
+.badge-oxide-active.badge-status-offline {
+  color: var(--color-syntax-coral);
+  border-color: rgba(255, 98, 133, 0.45);
+  background-color: rgba(159, 63, 83, 0.18);
+}
+
+/* Device card: sits between the hub header and the ports table */
+.hub-device-drawer {
+  padding: 8px 10px 10px 10px;
+  background-color: var(--color-void-black);
+  border-bottom: 1px solid var(--color-slate-base);
+  animation: fadeInDrawer 0.15s ease-out;
+}
+
+.hub-device-drawer[hidden] {
+  display: none;
+}
+
+@keyframes fadeInDrawer {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.device-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 6px;
+}
+
+.spec-card {
+  background-color: var(--color-carbon);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-cards);
+  padding: 6px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 48px;
+  transition: border-color 0.15s ease;
+}
+
+.spec-card:hover {
+  border-color: var(--color-steel);
+}
+
+.spec-label {
+  font-size: 8px;
+  font-family: var(--font-gt-america-mono);
+  color: var(--color-fog);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.spec-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.spec-value {
+  font-size: 10.5px;
+  color: var(--color-bone);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spec-truncate {
+  max-width: 220px;
+}
+
+.spec-link-btn,
+.spec-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-buttons);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-steel);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.spec-link-btn:hover,
+.spec-copy-btn:hover {
+  background: var(--color-slate-base);
+  color: var(--color-phosphor-green);
+  border-color: rgba(0, 216, 146, 0.4);
+}
+
+.spec-copy-btn.copied {
+  color: var(--color-phosphor-green);
+  border-color: var(--color-phosphor-green);
+  background: var(--color-deep-teal);
+}
+
+/* Catalog Location Badges */
+.loc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-badges);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.loc-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.loc-chip-digi01 {
+  background: rgba(0, 216, 146, 0.08);
+  border: 1px solid rgba(0, 216, 146, 0.35);
+  color: var(--color-phosphor-green);
+}
+
+.loc-chip-digi01 .loc-dot {
+  background: var(--color-phosphor-green);
+  box-shadow: 0 0 5px rgba(0, 216, 146, 0.6);
+}
+
+.loc-chip-digi02 {
+  background: rgba(64, 158, 255, 0.08);
+  border: 1px solid rgba(64, 158, 255, 0.35);
+  color: #409eff;
+}
+
+.loc-chip-digi02 .loc-dot {
+  background: #409eff;
+  box-shadow: 0 0 5px rgba(64, 158, 255, 0.6);
+}
+
+.loc-chip-net {
+  background: rgba(160, 174, 192, 0.08);
+  border: 1px solid rgba(160, 174, 192, 0.3);
+  color: var(--color-steel);
+}
+
+.loc-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+
+/* ==========================================================================
+   Combined "both hubs" view: per-hub device controls are not shown
+   ========================================================================== */
+body[data-view="both"] .btn-hub-info,
+body[data-view="both"] .hub-device-drawer {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Licence registry: environment filter, servers panel, grouped table
+   ========================================================================== */
+.catalog-env-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.env-tag {
+  font-family: var(--font-gt-america-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  padding: 0 4px;
+  border-radius: var(--radius-badges);
+  border: 1px solid var(--color-slate-base);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.env-prod {
+  color: var(--color-phosphor-green);
+  border-color: rgba(0, 216, 146, 0.4);
+  background-color: var(--color-deep-teal);
+}
+.env-dev {
+  color: #f2b84b;
+  border-color: rgba(242, 184, 75, 0.45);
+  background-color: rgba(242, 184, 75, 0.08);
+}
+.env-other {
+  color: var(--color-silver);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Grouped table */
+
+
+
+
+
+
+
+.lic-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lic-sub {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.lic-medium {
+  font-family: var(--font-gt-america-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: var(--color-fog);
+}
+
+.lic-inactive {
+  font-family: var(--font-gt-america-mono);
+  font-size: 8.5px;
+  color: var(--color-syntax-coral);
+}
+
+.catalog-table tr.row-inactive td {
+  opacity: 0.55;
+}
+
+
+/* ==========================================================================
+   Licence registry: key medium, physical connection, consumers, chip highlight
+   ========================================================================== */
+.pill-count {
+  margin-left: 3px;
+  color: var(--color-fog);
+}
+.filter-pill.active .pill-count {
+  color: var(--color-silver);
+}
+
+.medium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  padding: 1px 6px 1px 4px;
+  border-radius: var(--radius-badges);
+  border: 1px solid var(--color-slate-base);
+  white-space: nowrap;
+}
+.medium-badge .material-symbols-outlined {
+  font-size: 13px;
+  line-height: 1;
+}
+.medium-soft {
+  color: var(--color-syntax-violet);
+  border-color: rgba(197, 138, 255, 0.4);
+  background-color: rgba(197, 138, 255, 0.08);
+}
+.medium-hard {
+  color: #e0a15a;
+  border-color: rgba(224, 161, 90, 0.45);
+  background-color: rgba(224, 161, 90, 0.08);
+}
+
+
+
+.conn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: var(--radius-badges);
+  white-space: nowrap;
+  cursor: default;
+  transition: box-shadow 0.1s ease, background-color 0.1s ease;
+}
+.conn-digi01 {
+  background: rgba(0, 216, 146, 0.08);
+  border: 1px solid rgba(0, 216, 146, 0.35);
+  color: var(--color-phosphor-green);
+}
+.conn-digi01 .loc-dot {
+  background: var(--color-phosphor-green);
+  box-shadow: 0 0 5px rgba(0, 216, 146, 0.6);
+}
+.conn-digi02 {
+  background: rgba(64, 158, 255, 0.08);
+  border: 1px solid rgba(64, 158, 255, 0.35);
+  color: #409eff;
+}
+.conn-digi02 .loc-dot {
+  background: #409eff;
+  box-shadow: 0 0 5px rgba(64, 158, 255, 0.6);
+}
+
+
+
+.chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.host-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-gt-america-mono);
+  font-size: 9.5px;
+  color: var(--color-silver);
+  background-color: var(--color-void-black);
+  border: 1px solid var(--color-slate-base);
+  border-radius: var(--radius-badges);
+  padding: 0 5px;
+  line-height: 1.6;
+  white-space: nowrap;
+  cursor: default;
+  transition: box-shadow 0.1s ease, background-color 0.1s ease, color 0.1s ease;
+}
+.host-chip-title {
+  font-size: 10.5px;
+  color: var(--color-bone);
+  background-color: transparent;
+  border-color: transparent;
+  padding: 0 2px;
+}
+.host-chip-more {
+  color: var(--color-fog);
+}
+
+/* Same port / host / server highlighted everywhere in the section */
+.hl-source,
+.hl-match {
+  color: var(--color-bone) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+.hl-source {
+  box-shadow: 0 0 0 1px rgba(0, 216, 146, 0.7);
+}
+.hl-match {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+/* Server cards: never truncate the host name / IP, wrap tags instead */
+
+/* Flat licence registry: multi-port keys stack one port per line, aligned with "forwarded to" */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.stack-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 18px;
+  white-space: nowrap;
+}
+.where-icon {
+  font-size: 13px;
+  color: var(--color-steel);
+}
+.where-ip {
+  font-family: var(--font-gt-america-mono);
+  font-size: 9px;
+  color: var(--color-fog);
+}
